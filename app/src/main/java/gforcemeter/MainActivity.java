@@ -5,6 +5,7 @@
 package gforcemeter;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -17,12 +18,14 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.meter.R;
+import com.orm.SugarDb;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.DecimalFormat;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
     private SensorManager accel;
@@ -34,19 +37,23 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     private TextView minG;
     private TextView maxG;
     private gforce gf;
-
+    private gforceDB gdb;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //i know not the greatest software design
+        //this.saveData();
+        this.getData();
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         accel = (SensorManager) getSystemService(SENSOR_SERVICE);
         accel.registerListener(this, accel.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), SensorManager.SENSOR_DELAY_NORMAL);
         maintxt = (TextView)findViewById(R.id.gload);
+
         this.minG = (TextView)findViewById(R.id.minG);
         this.maxG = (TextView)findViewById(R.id.maxG);
+
         final Button resetbtn = (Button)findViewById(R.id.resetbtn);
         this.gf = new gforce(this);
         resetbtn.setOnClickListener(new View.OnClickListener() {
@@ -60,30 +67,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         savebtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                gdb = new gforceDB(highest, lowest);
                 saveData();
             }
         });
-        /*
-        //File Saving deactivated for first version
-        FileInputStream fis;
-
-        StringBuffer content = new StringBuffer("");
-        try {
-            fis = openFileInput("gforceresult.csv");
-            int n = 0;
-            byte[] buffer = new byte[4096];
-
-            while((n = fis.read(buffer)) != -1){
-                content.append(new String(buffer, 0, n));
-            }
-            this.maxG.setText(content.toString());
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        */
-
     }
 
     public double getGforce(double x, double y, double z){
@@ -107,9 +94,21 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         this.setHighest(1.000000000);
     }
     public void saveData(){
-        gforceDB gdb = new gforceDB(this.lowest, this.highest);
         gdb.save();
     }
+
+    public void getData(){
+        List<gforceDB> data = gforceDB.find(gforceDB.class, "MAX_VAL > 1");
+        Log.d("DATABASE","found Data:"+data.get(0).getMaxVal());
+        //get latest:
+        Log.d("LENGTH","Length of Array:"+data.size());
+        double latestMax = data.get(data.size()-1).getMaxVal();
+        double latestMin = data.get(data.size()-1).getMinVal();
+        this.highest = latestMax;
+        this.lowest = latestMin;
+        //setting text throws error :(
+    }
+
     @Override
     public void onSensorChanged(SensorEvent event) {
         if(event.sensor.getType()==Sensor.TYPE_ACCELEROMETER){
