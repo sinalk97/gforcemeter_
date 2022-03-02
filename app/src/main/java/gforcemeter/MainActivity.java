@@ -55,26 +55,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 gf.reset();
             }
         });
-        /*
+
         final Button savebtn = (Button)findViewById(R.id.savebtn);
         savebtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String filename ="gforceresult.csv";
-                String fileContents = highest + ", " + lowest;
-                FileOutputStream outputStream;
-
-                try{
-                    outputStream = openFileOutput(filename, Context.MODE_PRIVATE);
-                    outputStream.write(fileContents.getBytes());
-                    outputStream.close();
-                }catch (Exception ex){
-                    minG.setText(ex.getMessage());
-                    Log.d(TAG, ex.getMessage());
-                }
+                saveData();
             }
         });
-
+        /*
         //File Saving deactivated for first version
         FileInputStream fis;
 

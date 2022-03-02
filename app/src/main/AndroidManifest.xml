@@ -8,6 +8,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:name="com.orm.SugarApp"
         android:theme="@style/AppTheme">
         <activity android:name="gforcemeter.MainActivity">
             <intent-filter>
@@ -17,8 +18,8 @@
             </intent-filter>
         </activity>
         <meta-data android:name="DATABASE" android:value="minmax.db" />
-        <meta-data android:name="VERSION" android:value="2" />
+        <meta-data android:name="VERSION" android:value="3" />
         <meta-data android:name="QUERY_LOG" android:value="true" />
-        <meta-data android:name="DOMAIN_PACKAGE_NAME" android:value="com.example.meter" />
+        <meta-data android:name="GFORCE_DB" android:value="com.example.meter" />
     </application>
 </manifest>
