@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 gf.reset();
             }
         });
+        /*
         final Button savebtn = (Button)findViewById(R.id.savebtn);
         savebtn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+        */
 
     }
 
@@ -116,7 +117,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         this.setLowest(1.000000000);
         this.setHighest(1.000000000);
     }
-
+    public void saveData(){
+        gforceDB gdb = new gforceDB(this.lowest, this.highest);
+        gdb.save();
+    }
     @Override
     public void onSensorChanged(SensorEvent event) {
         if(event.sensor.getType()==Sensor.TYPE_ACCELEROMETER){
@@ -137,6 +141,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     }
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
-
+        //do nothing, not required
     }
 }
